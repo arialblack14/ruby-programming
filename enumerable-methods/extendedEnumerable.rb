@@ -25,7 +25,23 @@ module Enumerable
 		result
 	end
 
-
+	def my_all?
+		unless block_given?
+			self.my_each do |item| 
+				if item == true 
+					return true
+				else
+					return false
+				end
+			end
+		else
+			if self == self.my_select { |item| yield item }
+				true
+			else
+				false
+			end
+		end
+	end
 
 
 end
