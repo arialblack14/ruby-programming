@@ -18,13 +18,11 @@ module Enumerable
 	end
 
 	def my_select
-		index = 0
-		while index < self.length
-			yield self[index]
-			self[index]
-			index += 1
+		result =[]
+		self.my_each do |item|
+			result << item if yield item
 		end
-
+		result
 	end
 
 
