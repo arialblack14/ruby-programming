@@ -43,5 +43,15 @@ module Enumerable
 		end
 	end
 
+	def my_any?
+		item_state = []
+		self.my_each do |item|
+			item_state << (yield item)
+			#check if there is at least one true item
+			item_state.include? true ? true : false
+		end
+		item_state.include? true
+	end
+
 
 end
