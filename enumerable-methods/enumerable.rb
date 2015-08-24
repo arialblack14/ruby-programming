@@ -88,5 +88,19 @@ module Enumerable
 		new_array
 	end
 
+	def my_inject(arg = nil)
+		if block_given?
+			i = 0
+			result = arg
+			for i in self do 
+				result += yield(i)
+				i += 1
+			end
+			result
+		else
+			self.my_each { |item| item }
+		end			
+	end
+
 
 end
