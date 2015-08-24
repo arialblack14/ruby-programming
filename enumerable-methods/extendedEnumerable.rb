@@ -56,11 +56,27 @@ module Enumerable
 	def my_none?
 		item_state = []
 		unless block_given?
+			#checks if there are false items
 			self.my_each { |element| item_state << element unless element == false }
 		else
+			#also adds to item_state if there is a true item
 			self.my_each { |item| item_state << item if yield(item) }
 		end
 		item_state.include? true
+	end
+
+	def my_count(*args)
+		item_count = 0
+		unless block_given?			
+			if args.empty?
+				self.my_each { |item| item_count += 1 }
+			else			
+				self.my_each { |item| item_count += 1 if item == args[0] }
+			end
+		else
+			self.my_each { |item| item_count += 1 if yield item }
+		end
+		item_count
 	end
 
 
