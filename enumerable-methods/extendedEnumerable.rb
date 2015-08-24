@@ -53,5 +53,15 @@ module Enumerable
 		item_state.include? true
 	end
 
+	def my_none?
+		item_state = []
+		unless block_given?
+			self.my_each { |element| item_state << element unless element == false }
+		else
+			self.my_each { |item| item_state << item if yield(item) }
+		end
+		item_state.include? true
+	end
+
 
 end
