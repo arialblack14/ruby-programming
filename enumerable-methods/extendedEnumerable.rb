@@ -79,5 +79,14 @@ module Enumerable
 		item_count
 	end
 
+	def my_map
+		new_array = []
+		return self unless block_given?
+		self.my_each do |item| 
+			new_array << yield(item)
+		end
+		new_array
+	end
+
 
 end
