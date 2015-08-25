@@ -89,18 +89,24 @@ module Enumerable
 	end
 
 	def my_inject(arg = nil)
-		if block_given?
-			i = 0
-			result = arg
-			for i in self do 
-				result += yield(i)
-				i += 1
-			end
-			result
+		result = arg || 0
+		unless block_given?
+			result = self.(arg)
 		else
-			self.my_each { |item| item }
-		end			
+			self.my_each { |item|	result = yield(result, item) }
+		end
+		result
 	end
 
+	# ----------------------------
+	#Test for 'my_inject' method	
+	#multiply_els([2,4,5]) should return 40
+
+	def myltiply_els arr
+		arr.inject(:*)
+	end	
 
 end
+
+
+
