@@ -79,11 +79,37 @@ module Enumerable
 		item_count
 	end
 
-	def my_map &proc
+	#1st version of my_map
+
+	def my_map_with_block
+		new_array = []
+		return self unless block_given?
+		self.my_each do |item| 
+			new_array << yield(item)
+		end
+		new_array
+	end
+
+	#2nd version of my_map
+
+	def my_map_with_proc &proc
 		new_array = []
 		return self unless block_given?
 		self.my_each do |item| 
 			new_array << proc.call(item)
+		end
+		new_array
+	end
+
+	#3rd version of my_map
+
+	def my_map_with_proc_and_block(proc = nil)
+		new_array = []
+		unless (proc.is_a? Proc || block_given?)
+			return self
+		end		
+		self.my_each do |item| 
+			new_array << (proc.call(item) || yield(item))
 		end
 		new_array
 	end
