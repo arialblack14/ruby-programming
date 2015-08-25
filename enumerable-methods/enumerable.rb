@@ -103,7 +103,7 @@ module Enumerable
 	#multiply_els([2,4,5]) should return 40
 
 	def myltiply_els arr
-		arr.inject(:*)
+		arr.my_inject(:*)
 	end	
 
 end
