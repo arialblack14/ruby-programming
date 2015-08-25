@@ -79,11 +79,11 @@ module Enumerable
 		item_count
 	end
 
-	def my_map
+	def my_map &proc
 		new_array = []
 		return self unless block_given?
 		self.my_each do |item| 
-			new_array << yield(item)
+			new_array << proc.call(item)
 		end
 		new_array
 	end
