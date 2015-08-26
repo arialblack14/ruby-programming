@@ -128,13 +128,11 @@ module Enumerable
 		end
 		result
 	end
-
-	# ----------------------------
-	#Test for 'my_inject' method	
-	#multiply_els([2,4,5]) should return 40
-	def myltiply_els arr
-		arr.my_inject { |result, item| result * item }
-	end		
-
 end
 
+# ----------------------------
+#Test for 'my_inject' method	
+#multiply_els([2,4,5]) should return 40
+def myltiply_els arr
+	arr.my_inject { |result, item| result * item }
+end		
