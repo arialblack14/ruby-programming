@@ -120,11 +120,11 @@ module Enumerable
 	end
 
 	def my_inject(arg = nil)
-		result = arg || 0
+		result = arg || self.first
 		unless block_given?
-			result = self.(arg)
+			result = self.to_a
 		else
-			self.my_each { |item|	result = yield(result, item) }
+			self.to_a.my_each { |item|	result = yield(result, item) }
 		end
 		result
 	end
@@ -132,12 +132,9 @@ module Enumerable
 	# ----------------------------
 	#Test for 'my_inject' method	
 	#multiply_els([2,4,5]) should return 40
-
 	def myltiply_els arr
-		arr.my_inject(:*)
-	end	
+		arr.my_inject { |result, item| result * item }
+	end		
 
 end
-
-
 
