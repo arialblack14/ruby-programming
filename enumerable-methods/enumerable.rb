@@ -105,13 +105,18 @@ module Enumerable
 
 	def my_map_with_proc_and_block(proc = nil)
 		new_array = []
-		unless (proc.is_a? Proc || block_given?)
-			return self
-		end		
 		self.my_each do |item| 
-			new_array << (proc.call(item) || yield(item))
+			if proc && block_given?
+				new_array << yield(proc.call(item))
+			elsif proc
+				new_array << proc.call(item)
+			elsif block_given?
+				new_array << yield(item)
+			else
+				return self
+			end
+			new_array
 		end
-		new_array
 	end
 
 	def my_inject(arg = nil)
