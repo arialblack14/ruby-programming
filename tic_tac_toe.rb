@@ -1,11 +1,9 @@
 class Player
-	attr_reader = :player1,
-								:player2,
-								:letter
+	attr_reader = :player
 
 	def initialize
-		@player1 = player1
-		@player2 = player2
+		puts "What is your name player1?"
+		@player = gets.chomp
 	end
 
 	def get_letter
@@ -14,50 +12,71 @@ class Player
 	end
 
 	def error_choice
-		puts "Please choose x or o!" if @letter.downcase
-																					 .include? ("x" || "o")
-																					 || @letter.size > 1
+		if @letter.size > 1
+			puts "Only one letter please."
+		end
+		if @letter.downcase.include? ("x" || "o")
+			puts "Please choose x or o!"
+		end
 	end
 end
 
 class Board
+	attr_accessor :board,
+								:arr
+
 	def initialize
-		
+		@arr = %w{1 2 3 4 5 6 7 8 9}
+		@board = @arr[0] + "|" + @arr[1] + "|" + @arr[2] + "\n" +
+						"-+-+-\n" +
+						 @arr[3] + "|" + @arr[4] + "|" + @arr[5] + "\n" +
+						"-+-+-\n" +
+						 @arr[6] + "|" + @arr[7] + "|" + @arr[8] + "\n"
+	end
+
+	def draw
+		puts @board
 	end
 end
 
 class Game
 	attr_reader :turn,
-							:game
+							:game,
+							:player1,
+							:player2
 
 	def initialize
+		@player1 = Player.new
+		@player1 = Player.new
 		@board = Board.new
-		@game = game
 		@turn = 0
 	end
 
-	def start_game
+	def start
 		puts "************************************"
 		puts "** Welcome to the TicTacToe game! **"
 		puts "************************************"
+		puts
+		puts "It is your turn #{player1}"
 		turn_change
 	end
 
 	def turn_change
 		@turn%2 == 0 ? @player1.play : @player2.play
-		@turn++
+		@turn +=1
 	end
 
 	def play
 		
 	end
 
-	def end_game
+	def end
 		
 	end
 end
 
-
-game = Game.new
-p game.player1.choose_letter
+board = Board.new
+board.draw
+#game = Game.new
+#p game.start
 
