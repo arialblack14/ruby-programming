@@ -1,22 +1,45 @@
 class Player
-	attr_reader = :player
+	attr_reader = :id,
+								:player
 
-	def initialize
-		puts "What is your name player1?"
+	def initialize id
+		@id = id
+		puts "What is your name player #{@id}?"
 		@player = gets.chomp
+	end
+
+	def play
+		get_letter if @letter.nil?
+		get_position
+	end
+
+	def get_position
+		puts "Please select where to put your mark."
+		puts "Choose a number from 1 to 9."
+		@position = gets.chomp.to_i 
+		if @position.between?(1,9)
+			@board.arr[@position - 1] = @letter
+			puts @board
+		end
 	end
 
 	def get_letter
 		puts "Please choose a letter! X or O?"
-		@letter = gets.chomp if error_choice		
+		@letter = gets.chomp 
+		@letter unless error_choice
+		puts "#{@player} has chosen #{@letter}"
 	end
 
 	def error_choice
-		if @letter.size > 1
+		if @letter.length > 1
 			puts "Only one letter please."
+			get_letter
 		end
-		if @letter.downcase.include? ("x" || "o")
-			puts "Please choose x or o!"
+
+		unless @letter.downcase == "x" || 
+					 @letter.downcase == "o"
+			puts "ERROR!"
+			get_letter
 		end
 	end
 end
@@ -46,28 +69,25 @@ class Game
 							:player2
 
 	def initialize
-		@player1 = Player.new
-		@player1 = Player.new
+		puts "************************************"
+		puts "** Welcome to the TicTacToe game! **"
+		puts "************************************"
+		puts
+		@player1 = Player.new(1)
+		@player2 = Player.new(2)
 		@board = Board.new
 		@turn = 0
 	end
 
 	def start
-		puts "************************************"
-		puts "** Welcome to the TicTacToe game! **"
-		puts "************************************"
-		puts
-		puts "It is your turn #{player1}"
+		puts "Let the game begin!"
+		@board.draw
 		turn_change
 	end
 
 	def turn_change
-		@turn%2 == 0 ? @player1.play : @player2.play
+		@turn % 2 == 0 ? @player1.play : @player2.play
 		@turn +=1
-	end
-
-	def play
-		
 	end
 
 	def end
@@ -75,8 +95,6 @@ class Game
 	end
 end
 
-board = Board.new
-board.draw
-#game = Game.new
-#p game.start
 
+game = Game.new
+game.start
