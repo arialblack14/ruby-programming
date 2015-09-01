@@ -10,10 +10,11 @@ class Player
 end
 
 class Board
-	attr_reader 	:turn
 	attr_accessor :arr,
 								:board,
-								:mark
+								:turn,
+								:mark,
+								:choices
 
 	def initialize
 		@arr = %w{1 2 3 4 5 6 7 8 9}
@@ -22,8 +23,9 @@ class Board
 						 @arr[3] + "|" + @arr[4] + "|" + @arr[5] + "\n" +
 						"-+-+-\n" +
 						 @arr[6] + "|" + @arr[7] + "|" + @arr[8] + "\n"
-		@mark = ["x","o"]
+		@mark = mark
 		@turn = 0
+		@choices = []
 	end
 
 	def draw
@@ -35,26 +37,35 @@ class Board
 		get_position
 	end
 
+	# Asks users for a number to mark
 	def get_position
 		puts "Please select where to put your letter."
 		puts "Choose a number from 1 to 9."
 		@position = gets.chomp.to_i
+		error_choice ? @position : get_position
+		puts "@position : #{@position}"
 		put_mark
-		puts @board
 		turn_change
 	end
 
+	# Select x or o depending on player
 	def what_mark
-		return @turn % 2 == 0 ? @mark[0] : @mark[1] # Select x or o depending on player
+		return @turn % 2 == 0 ? @mark = "x" : @mark = "o"
+	end
+
+	# Sets array value to the current mark ("x" or "o") and stores players' choices
+	def put_mark
+		@choices[@turn] = @position - 1
+		puts "choices : #{@choices}"
+		puts "turn : #{@turn}"
+		@arr[@position - 1] = what_mark
+		puts "arr : #{@arr}"
+		puts @board
 		@turn += 1
 	end
 
-	def put_mark
-		@arr[@position - 1] = what_mark unless error_choice
-	end
-
 	def turn_change
-		9.times do
+		while	@turn < 9 do
 			play
 		end
 	end
@@ -64,16 +75,21 @@ class Board
 			puts "ERROR!"
 			puts "A number from 1 to 9 please."
 		end
+
+		@choices.each do |i|
+			if @choices[i] == @position - 1
+				puts "ERROR!"
+				puts "You have already picked this number."
+				get_position
+			end
+		end
 	end
 end
 
 class Game
-	attr_reader :turn,
-							:game,
+	attr_reader :game,
 							:player1,
-							:player2,
-							:mark0,
-							:mark1
+							:player2
 
 	def initialize
 		puts "************************************"
