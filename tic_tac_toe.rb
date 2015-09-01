@@ -15,7 +15,8 @@ class Board
 								:board,
 								:turn,
 								:mark,
-								:choices
+								:choices,
+								:game
 
 	def initialize
 		@arr = %w{1 2 3 4 5 6 7 8 9}
@@ -23,6 +24,9 @@ class Board
 		@mark = mark
 		@turn = 0
 		@choices = []
+		@choices1 = []
+		@choices2 = []
+		@game = game
 	end
 
 	def set_board arr
@@ -33,7 +37,9 @@ class Board
 						 @arr[6] + "|" + @arr[7] + "|" + @arr[8] + "\n"
 	end
 
+	# Sets board so that @board uses @arr values
 	def draw
+		set_board @arr
 		puts @board
 		play
 	end
@@ -60,11 +66,33 @@ class Board
 
 	# Stores players' choices in individual arrays
 	def player_choices
-		@choices[@turn] = @position - 1
-		puts @choices.sort
-		puts "winning_combo : #{$winning_combo}"
-		puts "#{@player} wins!" if $winning_combo.include? @choices.sort
-		puts "choices : #{@choices.sort}"
+		i, j = 0, 0
+		@choices = if @turn % 2 == 0
+								@choices1 << @position - 1
+								# p @choices1
+								check_win @choices1
+								i += 1
+							else
+								@choices2 << @position - 1
+								# p @choices2
+								check_win @choices2
+								j += 1
+							end
+		# puts @choices
+		# puts "choices : #{@choices.sort}"
+		# check_win @choices
+	end
+
+	def check_win choices
+		# puts "winning_combo : #{$winning_combo}"
+		$winning_combo.each do |check|
+			if (check - choices).empty?
+				puts @turn % 2 == 0 ? "Player 1, you win!!" : "Player 2, you win!!"
+				set_board @arr
+				puts "Bye bye..."
+				exit
+			end
+		end
 	end
 
 	# Sets array value to the current mark ("x" or "o")
@@ -72,7 +100,7 @@ class Board
 		player_choices		
 		# puts "turn : #{@turn}"
 		@arr[@position - 1] = what_mark
-		puts "arr : #{@arr}"
+		# puts "arr : #{@arr}"
 		set_board @arr
 		puts @board
 		@turn += 1
@@ -80,7 +108,21 @@ class Board
 
 	def turn_change
 		while	@turn < 9 do
+			@turn % 2 == 0 ? "Player 1, it is your turn" : "Player 2, it is your turn" 
 			play
+		end
+		puts "Replay maybe?"
+		@game = Game.new
+	end
+
+	# Check for errors the arrays of choices for both players
+	def check_choice choices
+		choices.each do |i|
+			if choices[i] == @position - 1
+				puts "ERROR!"
+				puts "You have already picked this number."
+				get_position
+			end
 		end
 	end
 
@@ -89,14 +131,8 @@ class Board
 			puts "ERROR!"
 			puts "A number from 1 to 9 please."
 		end
-
-		@choices.each do |i|
-			if @choices[i] == @position - 1
-				puts "ERROR!"
-				puts "You have already picked this number."
-				get_position
-			end
-		end
+		check_choice @choices1
+		check_choice @choices2
 	end
 end
 
@@ -123,7 +159,8 @@ class Game
 	end
 
 	def end
-		
+		puts "Bye bye!"
+		exit
 	end
 end
 
