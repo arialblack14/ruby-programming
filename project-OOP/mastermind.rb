@@ -40,14 +40,17 @@ class Player
 end
 
 class Board
-	attr_reader :guess, :count_guess
+	attr_reader :guess, :count_guess, :total_guesses
 
 	def initialize
 		@guess = "rrrr"
 		@count_guess = 0
-		# Picks 1 each time from the array and joins in the end
+		# Picks 1 each time from the array 
+		# and joins in the end
+		@total_guesses = 12
 		@secret = 4.times.map { ['r', 'g', 'b', 'y'].sample }.join
-		#puts @secret
+		# puts @secret
+		@color_count = 0
 	end
 
 	def start
@@ -58,14 +61,32 @@ class Board
 	end
 
 	def check_guess guess
-		@guess == @secret ? (puts "win") : (puts "lose")
 		@count_guess += 1
-		puts "You have " + (12 - @count_guess).to_s + " guesses remaining."
+		@guess == @secret ? (puts "win") : remaining_guesses
 		reguess
+	end
+
+	def remaining_guesses
+		puts "You have " + (@total_guesses - @count_guess).to_s + " guesses remaining."
 	end
 
 	def reguess
 		start
+	end
+
+	def positions guess
+		@secret.split.each do |color|
+			if @guess.split.include? color
+				@color_count += 1
+				if @guess.split.index(color) == 
+					 @secret.split.index(color)
+					 @right_spot
+				end
+			end
+			puts "A color is in #{@color_count} spots."
+			puts "A color is in the right spot."
+		end
+		guess		
 	end
 end
 
