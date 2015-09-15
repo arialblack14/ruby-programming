@@ -1,3 +1,5 @@
+require 'active_support/inflector'
+
 class Game
 	attr_reader :game
 
@@ -49,8 +51,9 @@ class Board
 		# and joins in the end
 		@total_guesses = 12
 		@secret = 4.times.map { ['r', 'g', 'b', 'y'].sample }.join
-		# puts @secret
+		puts @secret
 		@color_count = 0
+		@right_spot = 0
 	end
 
 	def start
@@ -63,6 +66,7 @@ class Board
 	def check_guess guess
 		@count_guess += 1
 		@guess == @secret ? (puts "win") : remaining_guesses
+		positions
 		reguess
 	end
 
@@ -74,19 +78,22 @@ class Board
 		start
 	end
 
-	def positions guess
-		@secret.split.each do |color|
-			if @guess.split.include? color
+	def positions
+		# p @guess.split("")
+		# p @secret.split("")
+		@secret.split("").each do |color|
+			if @guess.split("").include? color
 				@color_count += 1
-				if @guess.split.index(color) == 
-					 @secret.split.index(color)
-					 @right_spot
+				if @guess.split("").to_a.index(color) == 
+					 @secret.split("").to_a.index(color)
+					 @right_spot += 1
+					 # p @guess.split("").to_a.index(color)
+					 # p @secret.split("").to_a.index(color)
 				end
 			end
-			puts "A color is in #{@color_count} spots."
-			puts "A color is in the right spot."
 		end
-		guess		
+		puts "A color is found in #{@color_count} spots."
+		puts "#{@right_spot} color".pluralize + " in the right spot."
 	end
 end
 
