@@ -32,8 +32,8 @@ end
 class Player
 	attr_reader :name
 
-	def initialize name
-		@name = name
+	def initialize name 
+		@name = name || "Strager"
 	end
 
 	def hello
@@ -50,7 +50,7 @@ class Board
 		# Picks 1 each time from the array 
 		# and joins in the end
 		@total_guesses = 12
-		@secret = 4.times.map { ['r', 'g', 'b', 'y'].sample }.join
+		@secret = 4.times.map { ['r', 'g', 'b', 'y', 'q', 'p'].sample }.join
 		puts @secret
 		@color_count = 0
 		@right_spot = 0
@@ -65,9 +65,13 @@ class Board
 
 	def check_guess guess
 		@count_guess += 1
-		@guess == @secret ? (puts "win") : remaining_guesses
+		guessed
 		positions
 		reguess
+	end
+
+	def guessed
+		@guess == @secret ? (puts "win") : remaining_guesses
 	end
 
 	def remaining_guesses
@@ -79,21 +83,40 @@ class Board
 	end
 
 	def positions
-		# p @guess.split("")
-		# p @secret.split("")
+		p @guess.split("")
+		p @secret.split("")
+		loop_count = 0
 		@secret.split("").each do |color|
-			if @guess.split("").include? color
+			temp = @guess.split("")
+			if temp.include? color
 				@color_count += 1
-				if @guess.split("").to_a.index(color) == 
-					 @secret.split("").to_a.index(color)
-					 @right_spot += 1
-					 # p @guess.split("").to_a.index(color)
-					 # p @secret.split("").to_a.index(color)
+				puts "color_count : " + @color_count.to_s
+
+				if @secret.split("").to_a.index(loop_count) == 
+				   @guess.split("").to_a.index(loop_count)
+					@right_spot += 1
+					puts "right_spot : " + @right_spot.to_s
 				end
 			end
+			p @guess.split("").to_a.index(color)
+			p @secret.split("").to_a.index(loop_count)
+			loop_count += 1
 		end
-		puts "A color is found in #{@color_count} spots."
-		puts "#{@right_spot} color".pluralize + " in the right spot."
+
+		unless @guess == @secret
+			puts "Right color(s) found : #{@color_count}."
+			puts "#{@right_spot} colour(s)" + " in the right place."
+		else
+			puts "Congrats!! You win!"
+			exit
+		end
+		@right_spot = 0
+		@color_count = 0
+		remaining_guesses
+	end
+
+	def index_color thing
+		thing += 1
 	end
 end
 
