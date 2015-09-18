@@ -1,5 +1,3 @@
-require 'active_support/inflector'
-
 class Game
 	attr_reader :game
 
@@ -32,7 +30,7 @@ end
 class Player
 	attr_reader :name
 
-	def initialize name 
+	def initialize name
 		@name = name || "Strager"
 	end
 
@@ -42,25 +40,15 @@ class Player
 end
 
 class Board
-	attr_reader :guess, :count_guess, :total_guesses
+	attr_reader :guess, :count_guess, :total_guesses, :role
 
 	def initialize
 		@guess = "rrrr"
 		@count_guess = 0
-		# Picks 1 each time from the array 
-		# and joins in the end
-		@total_guesses = 12
-		@secret = 4.times.map { ['r', 'g', 'b', 'y', 'q', 'p'].sample }.join
-		puts @secret
+		@total_guesses = 12		
 		@color_count = 0
 		@right_spot = 0
-	end
-
-	def start
-		puts "What is your guess...?"
-		@guess = gets.chomp
-		puts "Your guess is #{@guess}."
-		check_guess @guess
+		@role = role
 	end
 
 	def check_guess guess
@@ -79,7 +67,7 @@ class Board
 	end
 
 	def reguess
-		start
+		check_guess @guess
 	end
 
 	def positions
@@ -88,7 +76,6 @@ class Board
 			temp = @guess.split("")
 			if temp.include? color
 				@color_count += 1
-				puts "color_count : " + @color_count.to_s
 
 				if temp[loop_count] == color
 					@right_spot += 1
@@ -109,15 +96,40 @@ class Board
 		remaining_guesses
 	end
 
-	def index_color thing
-		thing += 1
+	def cpu_guesses
+		@guess = 4.times.map { ['r', 'g', 'b', 'y', 'q', 'p'].sample }.join
+		check_guess @guess
+	end
+
+	def code_maker
+		puts "What is your secret code?"
+		@secret = gets.chomp
+		check_guess cpu_guesses
+	end
+
+	def code_breaker
+		@secret = 4.times.map { ['r', 'g', 'b', 'y', 'q', 'p'].sample }.join
+		puts "Secret code has been generated."
+		puts "What is your guess...?"
+		@guess = gets.chomp
+		puts "Your guess is #{@guess}."
+		check_guess @guess
+	end
+
+	def role
+		puts "Would you like to be a code_(b)reaker or code_(m)aker?"
+		ans = gets.chomp
+		ans == "m" ? code_maker : code_breaker
 	end
 end
 
 class CodeBreaker < Player
 end
 
-p = CodeBreaker.new("Alex")
+class CodeMaker < Player
+end
+
+p = Player.new("Alex")
 p.hello
 g = Game.new
 g.start
