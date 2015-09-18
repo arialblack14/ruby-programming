@@ -83,8 +83,6 @@ class Board
 	end
 
 	def positions
-		p @guess.split("")
-		p @secret.split("")
 		loop_count = 0
 		@secret.split("").each do |color|
 			temp = @guess.split("")
@@ -92,14 +90,10 @@ class Board
 				@color_count += 1
 				puts "color_count : " + @color_count.to_s
 
-				if @secret.split("").to_a.index(loop_count) == 
-				   @guess.split("").to_a.index(loop_count)
+				if temp[loop_count] == color
 					@right_spot += 1
-					puts "right_spot : " + @right_spot.to_s
 				end
 			end
-			p @guess.split("").to_a.index(color)
-			p @secret.split("").to_a.index(loop_count)
 			loop_count += 1
 		end
 
