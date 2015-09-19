@@ -17,11 +17,14 @@ class Game
 	end
 
 	def play
+		p = Player.new("Alex")
+		p.hello
 		board = Board.new
 		board.start
 	end
 
 	def quit
+		puts "Choose 'p' next time..."
 		puts "Bye!"
 		exit
 	end
@@ -40,22 +43,49 @@ class Player
 end
 
 class Board
-	attr_reader :guess, :count_guess, :total_guesses, :role
+	attr_reader :guess, :count_guess, :total_guesses, :secret
 
 	def initialize
-		@guess = "rrrr"
+		@guess ||= "rrrr"
+		@secret ||= "qqqq"
 		@count_guess = 0
 		@total_guesses = 12		
 		@color_count = 0
 		@right_spot = 0
-		@role = role
+	end
+
+
+	def start
+		puts "Would you like to be a code_(b)reaker or code_(m)aker?"
+		ans = gets.chomp
+		ans == "m" ? code_maker : code_breaker
+	end
+
+	def code_maker
+		puts "What is your secret code?"
+		@secret = gets.chomp
+		cpu_guesses
+	end
+
+	def code_breaker
+		@secret = 4.times.map { ['r', 'g', 'b', 'y', 'q', 'p'].sample }.join
+		puts "Secret code has been generated."
+		unless guessed
+			12.times do
+				puts "What is your guess...?"
+				@guess = gets.chomp
+				puts "Your guess is #{@guess}."
+				check_guess @guess
+			end
+		end
 	end
 
 	def check_guess guess
+		puts @guess
+		puts @secret
 		@count_guess += 1
 		guessed
 		positions
-		reguess
 	end
 
 	def guessed
@@ -63,11 +93,12 @@ class Board
 	end
 
 	def remaining_guesses
-		puts "You have " + (@total_guesses - @count_guess).to_s + " guesses remaining."
-	end
-
-	def reguess
-		check_guess @guess
+		rem_guesses = @total_guesses - @count_guess
+		puts rem_guesses.to_s + " guesses remaining..."
+		if rem_guesses == 0
+			puts "No more guesses!"
+			exit
+		end
 	end
 
 	def positions
@@ -80,6 +111,8 @@ class Board
 				if temp[loop_count] == color
 					@right_spot += 1
 				end
+				@color_temp = @color_count
+				@color = color
 			end
 			loop_count += 1
 		end
@@ -93,43 +126,17 @@ class Board
 		end
 		@right_spot = 0
 		@color_count = 0
-		remaining_guesses
 	end
 
 	def cpu_guesses
-		@guess = 4.times.map { ['r', 'g', 'b', 'y', 'q', 'p'].sample }.join
-		check_guess @guess
-	end
-
-	def code_maker
-		puts "What is your secret code?"
-		@secret = gets.chomp
-		check_guess cpu_guesses
-	end
-
-	def code_breaker
-		@secret = 4.times.map { ['r', 'g', 'b', 'y', 'q', 'p'].sample }.join
-		puts "Secret code has been generated."
-		puts "What is your guess...?"
-		@guess = gets.chomp
-		puts "Your guess is #{@guess}."
-		check_guess @guess
-	end
-
-	def role
-		puts "Would you like to be a code_(b)reaker or code_(m)aker?"
-		ans = gets.chomp
-		ans == "m" ? code_maker : code_breaker
+		unless guessed
+			12.times do 
+				@guess = 4.times.map { %w(r g b y q p).sample }.join
+				check_guess @guess
+			end
+		end	
 	end
 end
 
-class CodeBreaker < Player
-end
-
-class CodeMaker < Player
-end
-
-p = Player.new("Alex")
-p.hello
 g = Game.new
 g.start
